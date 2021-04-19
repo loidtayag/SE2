@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\SE2.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\SE2.dir/objects.a @CMakeFiles\SE2.dir\objects1.rsp
+C:\MinGW\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\SE2.dir/objects.a -Wl,--no-whole-archive  -o SE2.exe -Wl,--out-implib,libSE2.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\SE2.dir\linklibs.rsp

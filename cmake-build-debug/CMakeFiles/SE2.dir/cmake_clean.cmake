@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/SE2.dir/lib.c.obj"
   "CMakeFiles/SE2.dir/main.c.obj"
   "SE2.exe"
   "SE2.exe.manifest"

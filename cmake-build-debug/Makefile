@@ -142,6 +142,33 @@ SE2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SE2.dir\build.make CMakeFiles/SE2.dir/build
 .PHONY : SE2/fast
 
+lib.obj: lib.c.obj
+
+.PHONY : lib.obj
+
+# target to build an object file
+lib.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SE2.dir\build.make CMakeFiles/SE2.dir/lib.c.obj
+.PHONY : lib.c.obj
+
+lib.i: lib.c.i
+
+.PHONY : lib.i
+
+# target to preprocess a source file
+lib.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SE2.dir\build.make CMakeFiles/SE2.dir/lib.c.i
+.PHONY : lib.c.i
+
+lib.s: lib.c.s
+
+.PHONY : lib.s
+
+# target to generate assembly for a file
+lib.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SE2.dir\build.make CMakeFiles/SE2.dir/lib.c.s
+.PHONY : lib.c.s
+
 main.obj: main.c.obj
 
 .PHONY : main.obj
@@ -178,6 +205,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... SE2
+	@echo ... lib.obj
+	@echo ... lib.i
+	@echo ... lib.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

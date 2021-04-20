@@ -74,6 +74,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/0. College/SE/SE2/lib.c">
+			<Option target="SE2"/>
+		</Unit>
+		<Unit filename="C:/0. College/SE/SE2/lib.h">
+			<Option target="SE2"/>
+		</Unit>
 		<Unit filename="C:/0. College/SE/SE2/main.c">
 			<Option target="SE2"/>
 		</Unit>

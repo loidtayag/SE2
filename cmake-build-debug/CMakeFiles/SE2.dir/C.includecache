@@ -9,4 +9,10 @@
 C:/0. College/SE/SE2/main.c
 stdio.h
 -
+string.h
+-
+stdlib.h
+-
+time.h
+-
 

@@ -7,6 +7,7 @@ struct data {
     char *player2_color;
     int player1_score;
     int player2_score;
+    char *current_color;
 };
 
 int main() {

@@ -17,5 +17,7 @@ struct data {
 
 void InitializeGameSettings(struct data * Data, char board[8][8]);
 void PrintBoard(char board[8][8]);
+void Move(struct data * Data, int move[2]);
+int IsEmpty(char board[8][8], int move[2]);
 
 #endif //SE2_LIB_H

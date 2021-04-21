@@ -49,10 +49,34 @@ void PrintBoard(char board[8][8]) {
         printf("     ---------------------------------\n"); //Row Splitter
         (i != 8) ? (printf("  %i  ", i + 1)) : (printf("     ")); //In row 9, don't want to show '9'
         for (int j = 0; j < 8; ++j) { //Column Index
-            (i != 8) ? (printf("| %c ", board[i][j])) : (printf("  %c ", 97 + j));
             //In row 9, don't want to show '|' before each letter in row 9 and to show letter value not numerical value
+            (i != 8) ? (printf("| %c ", board[i][j])) : (printf("  %c ", 97 + j));
         }
         (i != 8) ? (printf("|\n")) : (printf("\n")); //In row 9, don't want to show '|' at the end of the letters
     }
+
+    /*After each play you want it to separate the plays clearly*/
+    printf("\n\n-------------------------------------------------------------------------\n\n");
 }
 
+void Move(struct data * Data, int move[2]) {
+    char temp[2]; //to store Column move so that we can convert it to an integer
+    printf("Example of move input: 3 a (row goes first SEPARATED by a space for the column)\n\n");
+
+    /*Check which player's turn it is*/
+    (strcmp(Data->current_color, Data->player1_color) == 0)?
+    (printf("%s, enter your move: ", Data->player1_name)): //Player 1's turn
+    (printf("%s, enter your move: ", Data->player2_name)); //Player 2's turn
+
+    /*Read in player's move and convert to index form*/
+    fscanf(stdin, "%i %c", &move[0], temp);
+    move[0]--; //Getting correct row index
+    move[1] = temp[0] - 97; //Getting correct column index
+
+//    printf("Move inputted in index: %i %i\n\n", move[0], move[1]);
+}
+
+int IsEmpty(char board[8][8], int move[2]) {
+    //Checking to see if it has a 'W' or 'B' in it already
+    return (strcmp(&board[move[0]][move[1]], "B") != 0 && strcmp(&board[move[0]][move[1]], "W") != 0);
+}

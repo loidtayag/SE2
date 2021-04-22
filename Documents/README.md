@@ -1,3 +1,8 @@
+#Global struct
+So it turns out most of functions need something from the instance 'struct data Data' and  so made it a global variable so that I don't have to keep passing it back and forth.
+
+Readability worsens if I pass struct every time I need it and if I only pass in the specific variables needed it would not become more memory efficient because it already has memory reserved for the struct and we pass by reference so makes no difference.
+
 #Checking validity of move
 Spot: the index in the 2D array where the player wishes to place a dice
 

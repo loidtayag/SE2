@@ -13,12 +13,13 @@ struct data {
     int player2_score;
     char player2_color[6];
     char current_color[6];
+    int move[2];
 };
 
-void InitializeGameSettings(struct data * Data, char board[8][8]);
+void InitializeGameSettings(char board[8][8]);
 void PrintBoard(char board[8][8]);
-void GetMove(struct data * Data, int move[2]);
-int IsEmptyMove(char board[8][8], const int move[2]);
-void EndTurn(struct data * Data);
+void GetMove(void);
+int IsEmptyMove(char board[8][8]);
+void EndTurn(void);
 
 #endif //SE2_LIB_H

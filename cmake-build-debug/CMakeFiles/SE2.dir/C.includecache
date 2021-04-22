@@ -6,13 +6,17 @@
 
 #IncludeRegexTransform: 
 
+C:/0. College/SE/SE2/lib.c
+lib.h
 C:/0. College/SE/SE2/lib.h
-
-C:/0. College/SE/SE2/main.c
 stdio.h
 -
-stdbool.h
+string.h
 -
-lib.h
+stdlib.h
+-
+time.h
+-
+
 C:/0. College/SE/SE2/lib.h
 

@@ -4,14 +4,12 @@
 
 int main() {
     /*Variables needed by the functions*/
-    struct data Data;
     char board[8][8] = {0};
-    int move[2];
     bool valid = false;
     bool gameOver = false;
 
     /*Setting up*/
-    InitializeGameSettings(&Data, board);
+    InitializeGameSettings(board);
     PrintBoard(board);
 
     while (gameOver == false) {
@@ -19,9 +17,9 @@ int main() {
         printf("Example of move input: 3 a (row goes first SEPARATED by a space for the column)\n\n");
         do {
             /*User Input for move*/
-            GetMove(&Data, move);
+            GetMove();
 
-            if (IsEmptyMove(board, move) == true) { //Spot is empty
+            if (IsEmptyMove(board) == true) { //Spot is empty
                 valid = true;
             } else { //Spot isn't empty
                 printf("Invalid move\n");
@@ -32,8 +30,11 @@ int main() {
 
 
         /*Switching turns*/
-        EndTurn(&Data);
+        EndTurn();
         PrintBoard(board);
+
+        /*Restting variables*/
+        valid = false;
     }
 
     return 0;

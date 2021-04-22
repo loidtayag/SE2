@@ -14,12 +14,14 @@ struct data {
     char player2_color[6];
     char current_color[6];
     int move[2];
+    char board[8][8];
 };
 
-void InitializeGameSettings(char board[8][8]);
-void PrintBoard(char board[8][8]);
+void InitializeGameSettings(void);
+void PrintBoard(void);
 void GetMove(void);
-int IsEmptyMove(char board[8][8]);
+int IsEmptyMove(void);
+int DirectionMove(void);
 void EndTurn(void);
 
 #endif //SE2_LIB_H

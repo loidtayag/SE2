@@ -3,14 +3,12 @@
 #include "lib.h"
 
 int main() {
-    /*Variables needed by the functions*/
-    char board[8][8] = {0};
     bool valid = false;
     bool gameOver = false;
 
     /*Setting up*/
-    InitializeGameSettings(board);
-    PrintBoard(board);
+    InitializeGameSettings();
+    PrintBoard();
 
     while (gameOver == false) {
         /*Checking if spot is empty*/
@@ -19,21 +17,25 @@ int main() {
             /*User Input for move*/
             GetMove();
 
-            if (IsEmptyMove(board) == true) { //Spot is empty
+            /*Checking if it's empty*/
+            if (IsEmptyMove() == true) { //Spot is empty
                 valid = true;
             } else { //Spot isn't empty
-                printf("Invalid move\n");
+                printf("Invalid move because it's not empty!\n");
+            }
+
+            /*Checking all directions*/
+            if (DirectionMove() == false) { //No direction had any discs with the same color
+                valid = false;
+                printf("Invalid move because no direction has the same color!\n");
             }
         } while (valid == false);
 
-        /*Checking all directions*/
-
-
         /*Switching turns*/
         EndTurn();
-        PrintBoard(board);
+        PrintBoard();
 
-        /*Restting variables*/
+        /*Resetting variables*/
         valid = false;
     }
 

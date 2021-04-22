@@ -1,7 +1,11 @@
 #Global struct
-So it turns out most of functions need something from the instance 'struct data Data' and  so made it a global variable so that I don't have to keep passing it back and forth.
+So it turns out most of the functions need something from the instance 'struct data Data'. 
+I made it a global variable for lib.c but the below justifies not using it.
 
-Readability worsens if I pass struct every time I need it and if I only pass in the specific variables needed it would not become more memory efficient because it already has memory reserved for the struct and we pass by reference so makes no difference.
+..* Typing 'Data.whatever' everytime worsens the readability of lib.c.
+
+Instead, I've decided to initialize it in the main.c and just pass by reference the members so that the readability 
+improves in lib.c
 
 #Checking validity of move
 Spot: the index in the 2D array where the player wishes to place a dice

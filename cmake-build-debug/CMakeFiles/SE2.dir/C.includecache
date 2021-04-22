@@ -17,6 +17,8 @@ stdlib.h
 -
 time.h
 -
+stdbool.h
+-
 
 C:/0. College/SE/SE2/lib.h
 

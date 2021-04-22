@@ -59,9 +59,8 @@ void PrintBoard(char board[8][8]) {
     printf("\n\n-------------------------------------------------------------------------\n\n");
 }
 
-void Move(struct data * Data, int move[2]) {
+void GetMove(struct data * Data, int move[2]) {
     char temp[2]; //to store Column move so that we can convert it to an integer
-    printf("Example of move input: 3 a (row goes first SEPARATED by a space for the column)\n\n");
 
     /*Check which player's turn it is*/
     (strcmp(Data->current_color, Data->player1_color) == 0)?
@@ -71,12 +70,27 @@ void Move(struct data * Data, int move[2]) {
     /*Read in player's move and convert to index form*/
     fscanf(stdin, "%i %c", &move[0], temp);
     move[0]--; //Getting correct row index
-    move[1] = temp[0] - 97; //Getting correct column index
+    move[1] = temp[0] - 97; //Getting correct column index using ascii code
 
 //    printf("Move inputted in index: %i %i\n\n", move[0], move[1]);
 }
 
-int IsEmpty(char board[8][8], int move[2]) {
+int IsEmptyMove(char board[8][8], const int move[2]) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //We can't use 'strcmp()' because 'board[move[0]][move[1]]' as a string might be 'BBB','WB' and so on because we  //
+    //had to take away the null terminator in InitializingGameSettings(). Thus, strcmp would keep reading until a 0 is//
+    //found e.g. move 4 d, strcmp would read it as 'WB'.                                                              //
+    //As a result strcmp would only work if there was no letters at the right of the move e.g. move 4 e.              //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    char *ptr = &board[move[0]][move[1]];
+
     //Checking to see if it has a 'W' or 'B' in it already
-    return (strcmp(&board[move[0]][move[1]], "B") != 0 && strcmp(&board[move[0]][move[1]], "W") != 0);
+    return (*ptr != 66 && *ptr != 87); //Using ascii code for char comparison
+}
+
+void EndTurn(struct data * Data) {
+    /*Change 'Data->current_color' to the opposite*/
+    (strcmp(Data->current_color, "black") == 0)?
+    (strcpy(Data->current_color, "white")): //End black's turn
+    (strcpy(Data->current_color, "black")); //End whites' turn
 }

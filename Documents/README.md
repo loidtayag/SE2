@@ -1,13 +1,9 @@
-#Global struct
-So it turns out most of the functions need something from the instance 'struct data Data'. 
-I made it a global variable for lib.c but the below justifies not using it.
+# Global struct vs Passing struct
+Making it a global variable in lib.c or passing by reference from main.c forces me to type 'Data.whatever' everytime, this worsens the readability of lib.c.
 
-..* Typing 'Data.whatever' everytime worsens the readability of lib.c.
+Instead I've decided to make it a global varaible in lib.c but typedef every struct member. Since most of the functions need something from the struct, passing by reference is too much extra work and I want the main.c to be simple and clean. The lib files will store all the complex declarations and functions. 
 
-Instead, I've decided to initialize it in the main.c and just pass by reference the members so that the readability 
-improves in lib.c
-
-#Checking validity of move
+# Checking validity of move
 Spot: the index in the 2D array where the player wishes to place a dice
 
 1. Check if spot is empty, if not ask user for another move until an empty spot is chosen.

@@ -5,6 +5,12 @@
 #ifndef SE2_LIB_H
 #define SE2_LIB_H
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
 struct data {
     char player1_name[16];
     int player1_score;
@@ -22,6 +28,14 @@ void PrintBoard(void);
 void GetMove(void);
 int IsEmptyMove(void);
 int DirectionMove(void);
+bool North(int jumpCounter, bool validDirection);
+bool NorthEast(int jumpCounter, bool validDirection);
+bool East(int jumpCounter, bool validDirection);
+bool SouthEast(int jumpCounter, bool validDirection);
+bool South(int jumpCounter, bool validDirection);
+bool SouthWest(int jumpCounter, bool validDirection);
+bool West(int jumpCounter, bool validDirection);
+bool NorthWest(int jumpCounter, bool validDirection);
 void EndTurn(void);
 
 #endif //SE2_LIB_H

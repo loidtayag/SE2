@@ -24,7 +24,6 @@ struct data {
 };
 
 void InitializeGameSettings(void);
-void PrintBoard(void);
 void GetMove(void);
 int IsEmptyMove(void);
 int DirectionMove(void);
@@ -36,6 +35,8 @@ bool South(int jumpCounter, bool validDirection);
 bool SouthWest(int jumpCounter, bool validDirection);
 bool West(int jumpCounter, bool validDirection);
 bool NorthWest(int jumpCounter, bool validDirection);
+void PrintBoard(void);
+void PrintScore(void);
 void EndTurn(void);
 
 #endif //SE2_LIB_H

@@ -42,21 +42,6 @@ void InitializeGameSettings(void) {
            Data.player1_name, Data.player1_color, Data.player2_name, Data.player2_color);
 }
 
-void PrintBoard(void) {
-    for (int i = 0; i < 9; ++i) { //Row Index
-        printf("     ---------------------------------\n"); //Row Splitter
-        (i != 8) ? (printf("  %i  ", i + 1)) : (printf("     ")); //In row 9, don't want to show '9'
-        for (int j = 0; j < 8; ++j) { //Column Index
-            //In row 9, don't want to show '|' before each letter in row 9 and to show letter value not numerical value
-            (i != 8) ? (printf("| %c ", Data.board[i][j])) : (printf("  %c ", 97 + j));
-        }
-        (i != 8) ? (printf("|\n")) : (printf("\n")); //In row 9, don't want to show '|' at the end of the letters
-    }
-
-    /*After each play you want it to separate the plays clearly*/
-    printf("\n\n-------------------------------------------------------------------------\n\n");
-}
-
 void GetMove(void) {
     char temp[2]; //to store Column move so that we can convert it to an integer
 
@@ -233,6 +218,25 @@ bool NorthWest(int jumpCounter, bool validDirection) {
 
 
     return validDirection;
+}
+
+void PrintBoard(void) {
+    for (int i = 0; i < 9; ++i) { //Row Index
+        printf("     ---------------------------------\n"); //Row Splitter
+        (i != 8) ? (printf("  %i  ", i + 1)) : (printf("     ")); //In row 9, don't want to show '9'
+        for (int j = 0; j < 8; ++j) { //Column Index
+            //In row 9, don't want to show '|' before each letter in row 9 and to show letter value not numerical value
+            (i != 8) ? (printf("| %c ", Data.board[i][j])) : (printf("  %c ", 97 + j));
+        }
+        (i != 8) ? (printf("|\n")) : (printf("\n")); //In row 9, don't want to show '|' at the end of the letters
+    }
+
+    /*After each play you want it to separate the plays clearly*/
+    printf("\n\n-------------------------------------------------------------------------\n\n");
+}
+
+void PrintScore(void) {
+
 }
 
 void EndTurn(void) {

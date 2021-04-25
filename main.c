@@ -2,31 +2,26 @@
 
 int main() {
     bool gameOver = false;
+    bool valid = false;
 
     /**Initialization**/
     InitializeGameSettings();
-    PrintBoard();
+    PrintTurn();
 
     while (gameOver == false) {
-        printf("Example of move input: 3 a (row goes first SEPARATED by a space for the column)\n\n");
-
-        /**Ensuring validity of move**/
-        bool valid = false;
-
-        do {
+        do { /**Ensuring validity of move**/
             /*User Input for move*/
             GetMove();
 
             /*Tests for validity of move*/
             if (IsEmptyMove() == true) { //Spot is empty
-                if (DirectionMove() == true) { //At least one direction had a disc with the same color
+                if (DirectionMove() == true) { //At least one direction had at least one disc to be captured
                     /*Results of the move*/
-                    PrintScore();
-                    PrintBoard();
-                    EndTurn();
+                    PrintTurn();
+                    SwitchTurn();
                     valid = true; //It has passed every test thus making it a valid move, ends loop
                 }
-                else {
+                else { //No direction had at least one disc to be captured
                     printf("Invalid move because no direction has the same color!\n");
                 }
             }
@@ -39,7 +34,7 @@ int main() {
         /**Checking if game should end or move on to next player's turn**/
         if (NULL) {
 
-            gameOver =true;
+            gameOver = true;
         }
         else { //Resetting variables for next player's turn
             valid = false;

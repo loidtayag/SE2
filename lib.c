@@ -4,7 +4,7 @@
 
 #include "lib.h"
 
-static struct data Data;
+struct data Data;
 
 void InitializeGameSettings(void) {
     printf("\n---Welcome to Othello---\n\n");
@@ -15,73 +15,74 @@ void InitializeGameSettings(void) {
     printf("Enter player 2 name: ");
     scanf("%s", Data.player2_name);
 
-    /*Score Initialization*/
-    Data.player1_score = 2;
-    Data.player2_score = 2;
-
     /*Board Initialization*/
-    //Without 'strtok' you'd be assigning a char array of size 2 e.g. "W" + "\0"
-    Data.board[3][3] = 'W';
+    Data.board[3][3] = 'W'; //Without 'strtok' you'd be assigning a char array of size 2 i.e. "W" + "\0"
     Data.board[3][4] = 'B';
     Data.board[4][3] = 'B';
     Data.board[4][4] = 'W';
+
+    /*Score Initialization*/
+    Data.player1_score = 2;
+    Data.player2_score = 2;
 
     /*Random Disc Color Initialization*/
     strcpy(Data.current_color, "Black"); //Set starting color
     srand(time(NULL)); // Set random seed
 
-    if ((rand() % 2) == 1) { //1 is rolled
+    if ((rand() % 2) == 1) { //1 is rolled therefore player 1 is black
         strcpy(Data.player1_color, "Black");
         strcpy(Data.player2_color, "White");
     }
-    else { //0 is rolled
+    else { //0 is rolled therefore player 2 is black
         strcpy(Data.player1_color, "White");
         strcpy(Data.player2_color, "Black");
     }
-    printf("Random 50-50 assignment of colors has been completed, %s is %s and %s is %s\n\n",
+
+    printf("Random 50-50 assignment of colors has been completed, %s is %s and %s is %s.",
            Data.player1_name, Data.player1_color, Data.player2_name, Data.player2_color);
+
+    /*For separating*/
+    printf("\n\n------------------------------------------------------------------------------\n\n"
+           "Example of move input: 3 d (row number + space + column letter)\n\n");
 }
 
 void GetMove(void) {
     char temp[2]; //to store Column move so that we can convert it to an integer
 
     /*Check which player's turn it is*/
-    (strcmp(Data.current_color, Data.player1_color) == 0)?
-    (printf("%s, enter your move: ", Data.player1_name)): //Player 1's turn
-    (printf("%s, enter your move: ", Data.player2_name)); //Player 2's turn
+    Data.player1_color[0] == Data.current_color[0]?
+    printf("%s, enter your move: ", Data.player1_name): //Player 1's turn
+    printf("%s, enter your move: ", Data.player2_name); //Player 2's turn
 
     /*Read in player's move and convert to index form*/
     fscanf(stdin, "%i %c", &Data.move[0], temp);
+    printf("\n"); //Separates move input line and board
     Data.move[0]--; //Getting correct row index
     Data.move[1] = temp[0] - 97; //Getting correct column index using ascii code
-
-//    printf("Move inputted in index: %i %i\n\n", move[0], move[1]);
 }
 
 int IsEmptyMove(void) {
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //We can't use 'strcmp()' because 'board[move[0]][move[1]]' as a string might be 'BBB','WB' and so on because we  //
-    //had to take away the null terminator in InitializingGameSettings(). Thus, strcmp would keep reading until a 0 is//
-    //found e.g. move 4 d, strcmp would read it as 'WB'.                                                              //
-    //As a result strcmp would only work if there was no letters at the right of the move e.g. move 4 e.              //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    char *ptr = &Data.board[Data.move[0]][Data.move[1]];
-
     //Checking to see if it has a 'W' or 'B' in it already
-    return *ptr != 66 && *ptr != 87; //Using ascii code for char comparison
+    return Data.board[Data.move[0]][Data.move[1]] != 66 && Data.board[Data.move[0]][Data.move[1]] != 87; //Using ascii code for char comparison
 }
 
 int DirectionMove(void) {
     int jumpCounter = -1; //Initialize to -1 to allow us to check validity of move
 
-    return (North(jumpCounter) != -1 ||
-            NorthEast(jumpCounter) != -1 ||
-            East(jumpCounter) != -1 ||
-            SouthEast(jumpCounter) != -1 ||
-            South(jumpCounter) != -1  ||
-            SouthWest(jumpCounter) != -1  ||
-            West(jumpCounter) != -1  ||
-            NorthWest(jumpCounter) != -1);
+    //We have to execute and check each one individually because 'or conditions' would cause a problem.
+    //Let's say 'North()' was true, because we use 'or conditions' the following functions wouldn't be executed
+    //because we only need one to be true i.e. it would not allow for multiple directions to be changed
+    int valid = 0;
+    if (NorthEast(jumpCounter) != -1) {valid = 1;}
+    if (North(jumpCounter) != -1) {valid = 1;}
+    if (East(jumpCounter) != -1) {valid = 1;}
+    if (SouthEast(jumpCounter) != -1) {valid = 1;}
+    if (South(jumpCounter) != -1) {valid = 1;}
+    if (SouthWest(jumpCounter) != -1) {valid = 1;}
+    if (West(jumpCounter) != -1) {valid = 1;}
+    if (NorthWest(jumpCounter) != -1) {valid = 1;}
+
+    return valid;
 }
 
 int North(int jumpCounter) {
@@ -97,7 +98,8 @@ int North(int jumpCounter) {
 
     row = Data.move[0]; //Starting at spot
 
-    if (jumpCounter != -1) { //Valid direction because we found same color
+    if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
         while (row >= jumpCounter) { //Loop until final disc of same color is found
             Data.board[row][Data.move[1]] = Data.current_color[0]; //Replace every disc with 'current_color'
 
@@ -124,7 +126,8 @@ int NorthEast(int jumpCounter) {
     row = Data.move[0]; //Starting at spot
     column = Data.move[1];
 
-    if (jumpCounter != -1) { //Valid direction because we found same color
+    if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
         while (row >= jumpCounter) { //Loop until final disc of same color is found
             Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
 
@@ -149,7 +152,8 @@ int East(int jumpCounter) {
 
     column = Data.move[1]; //Starting at spot
 
-    if (jumpCounter != -1) { //Valid direction because we found same color
+    if (jumpCounter != -1 && jumpCounter != Data.move[1] + 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
         while (column <= jumpCounter) { //Loop until final disc of same color is found
             Data.board[Data.move[0]][column] = Data.current_color[0]; //Replace every disc with 'current_color'
 
@@ -176,7 +180,8 @@ int SouthEast(int jumpCounter) {
     row = Data.move[0]; //Starting at spot
     column = Data.move[1];
 
-    if (jumpCounter != -1) { //Valid direction because we found same color
+    if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
         while (row <= jumpCounter) { //Loop until final disc of same color is found
             Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
 
@@ -190,7 +195,6 @@ int SouthEast(int jumpCounter) {
 
 int South(int jumpCounter) {
     int row = Data.move[0] + 1; //Starting at index below spot
-
     while (Data.board[row][Data.move[1]] != 0) { //Loop until end of direction is found
         if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Found same color => valid direction
             jumpCounter = row; //Keeps track of the index of the last disc of the same color
@@ -201,7 +205,8 @@ int South(int jumpCounter) {
 
     row = Data.move[0]; //Starting at spot
 
-    if (jumpCounter != -1) {
+    if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
         while (row <= jumpCounter) { //Loop until final disc of same color is found
             Data.board[row][Data.move[1]] = Data.current_color[0]; //Replace every disc with 'current_color'
 
@@ -213,49 +218,53 @@ int South(int jumpCounter) {
 }
 
 int SouthWest(int jumpCounter) {
-    int row = Data.move[0] + 1; //Loop 'idk' starting from index 'idk' spot
-    int column = Data.move[1] - 1; //Loop 'idk' starting from index 'idk' spot
+    int row = Data.move[0] + 1; //Starting at index that is bottom-left to spot
+    int column = Data.move[1] - 1;
 
-    while (Data.board[row][column] != 0) { //Stop if 0 is found i.e. end of direction
+    while (Data.board[row][column] != 0) { //Loop until end of direction is found
         if (Data.board[row][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter++; //Keeps track of how many discs we had to check before finding 0 i.e. end of direction
+            jumpCounter = row; //Keeps track of the index of the last disc of the same color
         }
-        else { //Found opposite color
-            jumpCounter++;
-        }
+
         ++row;
         --column;
     }
 
-    row = Data.move[0];
+    row = Data.move[0]; //Starting at spot
     column = Data.move[1];
 
-    if (jumpCounter != -1) { //Decides if it should replace the disc colors in the direction
-        do {
+    if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
+        while (row <= jumpCounter) { //Loop until final disc of same color is found
             Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
-            --jumpCounter;
+
             ++row;
             --column;
-        } while (Data.board[row][column] != 0);
+        }
     }
 
-    return jumpCounter;
+    return jumpCounter != -1;
 }
 
 int West(int jumpCounter) {
-    for (int i = Data.move[1] -  1; i > -1; --i) { //Loop left-wards starting from index that's to the left of spot
-        if (Data.board[Data.move[0]][i] == Data.current_color[0]) { //Found same color => valid direction
+    int column = Data.move[1] - 1; //Starting at index that is to the right of spot
+
+    while (Data.board[Data.move[0]][column] != 0) { //Loop until end of direction is found
+        if (Data.board[Data.move[0]][column] == Data.current_color[0]) { //Found same color => valid direction
+            jumpCounter = column; //Keeps track of the index of the last disc of the same color
         }
-        else if (Data.board[Data.move[0]][i] == 0) { //Found 0 i.e. end of direction => end loop
-            break;
-        }
-        jumpCounter++; //Keeps track of how many discs we had to check before finding 0 i.e. end of direction
+
+        --column;
     }
 
-    if (jumpCounter != -1) { //Decides if it should replace the disc colors in the direction
-        for (int i = Data.move[1]; jumpCounter > 0; --i) { //Loop left-wards starting from spot
-            Data.board[Data.move[0]][i] = Data.current_color[0]; //Replace every disc with 'current_color'
-            --jumpCounter;
+    column = Data.move[1]; //Starting at spot
+
+    if (jumpCounter != -1 && jumpCounter != Data.move[1] - 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
+        while (column <= jumpCounter) { //Loop until final disc of same color is found
+            Data.board[Data.move[0]][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+
+            --column;
         }
     }
 
@@ -263,57 +272,72 @@ int West(int jumpCounter) {
 }
 
 int NorthWest(int jumpCounter) {
-    int row = Data.move[0] - 1; //Loop top-left-wards starting from index that's to the top-left of spot
+    int row = Data.move[0] - 1; //Starting at index that is bottom-left to spot
     int column = Data.move[1] - 1;
 
-    while (Data.board[row][column] != 0) { //Stop if 0 is found i.e. end of direction
+    while (Data.board[row][column] != 0) { //Loop until end of direction is found
         if (Data.board[row][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter++; //Keeps track of how many discs we had to check before finding 0 i.e. end of direction
+            jumpCounter = row; //Keeps track of the index of the last disc of the same color
         }
-        else { //Found opposite color
-            jumpCounter++;
-        }
+
         --row;
         --column;
     }
 
-    row = Data.move[0];
+    row = Data.move[0]; //Starting at spot
     column = Data.move[1];
 
-    if (jumpCounter != -1) { //Decides if it should replace the disc colors in the direction
-        do {
+    if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
+        //Valid direction because we found a disc of same color that is more than 1 space away
+        while (row <= jumpCounter) { //Loop until final disc of same color is found
             Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
-            --jumpCounter;
+
             --row;
             --column;
-        } while (Data.board[row][column] != 0);
+        }
     }
 
-    return jumpCounter;
+    return jumpCounter != -1;
 }
 
-void PrintBoard(void) {
+void PrintTurn(void) {
     for (int i = 0; i < 9; ++i) { //Row Index
+        /*Board*/
         printf("     ---------------------------------\n"); //Row Splitter
         (i != 8) ? (printf("  %i  ", i + 1)) : (printf("     ")); //In row 9, don't want to show '9'
         for (int j = 0; j < 8; ++j) { //Column Index
-            //In row 9, don't want to show '|' before each letter in row 9 and to show letter value not numerical value
+            //In row 9, don't want to show '|' before each letter
             (i != 8) ? (printf("| %c ", Data.board[i][j])) : (printf("  %c ", 97 + j));
         }
-        (i != 8) ? (printf("|\n")) : (printf("\n")); //In row 9, don't want to show '|' at the end of the letters
+        (i != 8) ? (printf("|")) : (printf(" ")); //In row 9, don't want to show '|' at the end of the letters
+
+        /*Scoreboard*/
+        switch (i) {
+            case 2:
+                printf("      __________________________________\n");
+                break;
+            case 3:
+                printf("      -%10s (black): %i           -\n", Data.player1_name, Data.player1_score);
+                break;
+            case 4:
+                printf("      -%10s (white): %i           -\n", Data.player2_name, Data.player2_score);
+                break;
+            case 5:
+                printf("      __________________________________\n");
+                break;
+            default:
+                printf("\n");
+                break;
+        }
     }
 
-    /*After each play you want it to separate the plays clearly*/
-    printf("\n\n-------------------------------------------------------------------------\n\n");
+    /*Turn separator*/
+    printf("\n\n------------------------------------------------------------------------------\n\n");
 }
 
-void PrintScore(void) {
-
-}
-
-void EndTurn(void) {
+void SwitchTurn(void) {
     /*Change 'Data->current_color' to the opposite*/
-    (strcmp(Data.current_color, "Black") == 0)?
-    (strcpy(Data.current_color, "White")): //End black's turn
-    (strcpy(Data.current_color, "Black")); //End whites' turn
+    strcmp(Data.current_color, "Black") == 0 ?
+    strcpy(Data.current_color, "White") : //End black's turn
+    strcpy(Data.current_color, "Black"); //End white's turn
 }

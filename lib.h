@@ -35,8 +35,7 @@ int South(int jumpCounter);
 int SouthWest(int jumpCounter);
 int West(int jumpCounter);
 int NorthWest(int jumpCounter);
-void PrintBoard(void);
-void PrintScore(void);
-void EndTurn(void);
+void PrintTurn(void);
+void SwitchTurn(void);
 
 #endif //SE2_LIB_H

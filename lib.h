@@ -27,7 +27,7 @@ void InitializeGameSettings(void);
 void GetMove(void);
 int IsEmptyMove(void);
 int DirectionMove(void);
-int North(void);
+bool North(void);
 int NorthEast(void);
 int East(void);
 int SouthEast(void);

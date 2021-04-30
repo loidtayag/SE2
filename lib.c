@@ -72,7 +72,7 @@ int DirectionMove(void) {
     //Let's say 'North()' was true, because we use 'or conditions' the following functions wouldn't be executed
     //because we only need one to be true i.e. it would not allow for multiple directions to be changed.
     //Also only 'North()' is the only one well commented because the other directions just copy the comments from it
-    if (North() != 0) {valid = 1;}
+    if (North() == true) {valid = 1;}
     if (NorthEast() != 0) {valid = 1;}
     if (East() != 0) {valid = 1;}
     if (SouthEast() != 0) {valid = 1;}
@@ -84,9 +84,9 @@ int DirectionMove(void) {
     return valid;
 }
 
-int North(void) {
-    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color, if unchanged no
-    int capture = false;
+bool North(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false;
 
     //Starting at index above spot, loop to check how far until the final same colored disc is found
     for (int row = Data.move[0] - 1; Data.board[row][Data.move[1]] != 0; --row) {
@@ -95,17 +95,15 @@ int North(void) {
         }
     }
 
-    if (jumpCounter != -1) { //Passes if same color was found before end of direction
-        //Starting at spot, loop to check if any disc would result in at least 1 capture before changing
-        for (int row = Data.move[0]; row >= jumpCounter; --row) {
-            if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Same color is found
-            }
-            else { //Opposite color is found
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at spot, loop to check if any disc would result in at least 1 capture
+        for (int row = Data.move[0] - 1; row >= jumpCounter; --row) {
+            if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Passes if opposite color is found
                 capture = true;
             }
         }
 
-        if (capture == true) { //Passes if opposite color was found before jumpCounter index
+        if (capture == true) { //Passes if opposite color was found
             //Starting at spot, loop to replace every disc with 'current_color'
             for (int row = Data.move[0]; row >= jumpCounter; --row) {
                 Data.board[row][Data.move[1]] = Data.current_color[0];

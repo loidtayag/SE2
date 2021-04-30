@@ -67,56 +67,63 @@ int IsEmptyMove(void) {
 }
 
 int DirectionMove(void) {
-    int jumpCounter = -1; //Initialize to -1 to allow us to check validity of move
-
+    int valid = 0;
     //We have to execute and check each one individually because 'or conditions' would cause a problem.
     //Let's say 'North()' was true, because we use 'or conditions' the following functions wouldn't be executed
-    //because we only need one to be true i.e. it would not allow for multiple directions to be changed
-    int valid = 0;
-    if (NorthEast(jumpCounter) != -1) {valid = 1;}
-    if (North(jumpCounter) != -1) {valid = 1;}
-    if (East(jumpCounter) != -1) {valid = 1;}
-    if (SouthEast(jumpCounter) != -1) {valid = 1;}
-    if (South(jumpCounter) != -1) {valid = 1;}
-    if (SouthWest(jumpCounter) != -1) {valid = 1;}
-    if (West(jumpCounter) != -1) {valid = 1;}
-    if (NorthWest(jumpCounter) != -1) {valid = 1;}
+    //because we only need one to be true i.e. it would not allow for multiple directions to be changed.
+    //Also only 'North()' is the only one well commented because the other directions just copy the comments from it
+    if (North() != 0) {valid = 1;}
+    if (NorthEast() != 0) {valid = 1;}
+    if (East() != 0) {valid = 1;}
+    if (SouthEast() != 0) {valid = 1;}
+    if (South() != 0) {valid = 1;}
+    if (SouthWest() != 0) {valid = 1;}
+    if (West() != 0) {valid = 1;}
+    if (NorthWest() != 0) {valid = 1;}
 
     return valid;
 }
 
-int North(int jumpCounter) {
-    int row = Data.move[0] - 1; //Starting at index above spot
+int North(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color, if unchanged no
+    int capture = false;
 
-    while (Data.board[row][Data.move[1]] != 0) { //Loop until end of direction is found
-        if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = row; //Keeps track of the index of the last disc of the same color
-        }
-
-        --row;
-    }
-
-    row = Data.move[0]; //Starting at spot
-
-    if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (row >= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[row][Data.move[1]] = Data.current_color[0]; //Replace every disc with 'current_color'
-
-            --row;
+    //Starting at index above spot, loop to check how far until the final same colored disc is found
+    for (int row = Data.move[0] - 1; Data.board[row][Data.move[1]] != 0; --row) {
+        if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Passes if same color is found
+            jumpCounter = row;
         }
     }
 
-    return jumpCounter;
+    if (jumpCounter != -1) { //Passes if same color was found before end of direction
+        //Starting at spot, loop to check if any disc would result in at least 1 capture before changing
+        for (int row = Data.move[0]; row >= jumpCounter; --row) {
+            if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Same color is found
+            }
+            else { //Opposite color is found
+                capture = true;
+            }
+        }
+
+        if (capture == true) { //Passes if opposite color was found before jumpCounter index
+            //Starting at spot, loop to replace every disc with 'current_color'
+            for (int row = Data.move[0]; row >= jumpCounter; --row) {
+                Data.board[row][Data.move[1]] = Data.current_color[0];
+            }
+        }
+    }
+
+    return capture;
 }
 
-int NorthEast(int jumpCounter) {
+int NorthEast(void) {
+    int jumpCounter = -1;
+
     int row = Data.move[0] - 1; //Starting at index that is top-right to spot
     int column = Data.move[1] + 1;
-
-    while (Data.board[row][column] != 0) { //Loop until end of direction is found
-        if (Data.board[row][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = row; //Keeps track of the index of the last disc of the same color
+    while (Data.board[row][column] != 0) {
+        if (Data.board[row][column] == Data.current_color[0]) {
+            jumpCounter = row;
         }
 
         --row;
@@ -125,52 +132,50 @@ int NorthEast(int jumpCounter) {
 
     row = Data.move[0]; //Starting at spot
     column = Data.move[1];
-
     if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (row >= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (row >= jumpCounter) {
+            Data.board[row][column] = Data.current_color[0];
 
             --row;
             ++column;
         }
     }
 
-    return jumpCounter;
+    return jumpCounter != -1 && jumpCounter != Data.move[0] - 1;
 }
 
-int East(int jumpCounter) {
-    int column = Data.move[1] + 1; //Starting at index that is to the right of spot
+int East(void) {
+    int jumpCounter = -1;
 
-    while (Data.board[Data.move[0]][column] != 0) { //Loop until end of direction is found
-        if (Data.board[Data.move[0]][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = column; //Keeps track of the index of the last disc of the same color
+    int column = Data.move[1] + 1; //Starting at index that is to the right of spot
+    while (Data.board[Data.move[0]][column] != 0) {
+        if (Data.board[Data.move[0]][column] == Data.current_color[0]) {
+            jumpCounter = column;
         }
 
         ++column;
     }
 
     column = Data.move[1]; //Starting at spot
-
     if (jumpCounter != -1 && jumpCounter != Data.move[1] + 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (column <= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[Data.move[0]][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (column <= jumpCounter) {
+            Data.board[Data.move[0]][column] = Data.current_color[0];
 
             ++column;
         }
     }
 
-    return jumpCounter;
+    return jumpCounter != -1 && jumpCounter != Data.move[1] + 1;
 }
 
-int SouthEast(int jumpCounter) {
+int SouthEast(void) {
+    int jumpCounter = -1;
+
     int row = Data.move[0] + 1; //Starting at index that is bottom-right to spot
     int column = Data.move[1] + 1;
-
-    while (Data.board[row][column] != 0) { //Loop until end of direction is found
-        if (Data.board[row][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = row; //Keeps track of the index of the last disc of the same color
+    while (Data.board[row][column] != 0) {
+        if (Data.board[row][column] == Data.current_color[0]) {
+            jumpCounter = row;
         }
 
         ++row;
@@ -179,25 +184,25 @@ int SouthEast(int jumpCounter) {
 
     row = Data.move[0]; //Starting at spot
     column = Data.move[1];
-
     if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (row <= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (row <= jumpCounter) {
+            Data.board[row][column] = Data.current_color[0];
 
             ++row;
             ++column;
         }
     }
 
-    return jumpCounter != -1;
+    return jumpCounter != -1 && jumpCounter != Data.move[0] + 1;
 }
 
-int South(int jumpCounter) {
+int South(void) {
+    int jumpCounter = -1;
+
     int row = Data.move[0] + 1; //Starting at index below spot
-    while (Data.board[row][Data.move[1]] != 0) { //Loop until end of direction is found
-        if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = row; //Keeps track of the index of the last disc of the same color
+    while (Data.board[row][Data.move[1]] != 0) {
+        if (Data.board[row][Data.move[1]] == Data.current_color[0]) {
+            jumpCounter = row;
         }
 
         ++row;
@@ -206,24 +211,24 @@ int South(int jumpCounter) {
     row = Data.move[0]; //Starting at spot
 
     if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (row <= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[row][Data.move[1]] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (row <= jumpCounter) {
+            Data.board[row][Data.move[1]] = Data.current_color[0];
 
             ++row;
         }
     }
 
-    return jumpCounter;
+    return jumpCounter != -1 && jumpCounter != Data.move[0] + 1;
 }
 
-int SouthWest(int jumpCounter) {
+int SouthWest(void) {
+    int jumpCounter = -1;
+
     int row = Data.move[0] + 1; //Starting at index that is bottom-left to spot
     int column = Data.move[1] - 1;
-
-    while (Data.board[row][column] != 0) { //Loop until end of direction is found
-        if (Data.board[row][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = row; //Keeps track of the index of the last disc of the same color
+    while (Data.board[row][column] != 0) {
+        if (Data.board[row][column] == Data.current_color[0]) {
+            jumpCounter = row;
         }
 
         ++row;
@@ -232,26 +237,25 @@ int SouthWest(int jumpCounter) {
 
     row = Data.move[0]; //Starting at spot
     column = Data.move[1];
-
     if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (row <= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (row <= jumpCounter) {
+            Data.board[row][column] = Data.current_color[0];
 
             ++row;
             --column;
         }
     }
 
-    return jumpCounter != -1;
+    return jumpCounter != -1 && jumpCounter != Data.move[0] + 1;
 }
 
-int West(int jumpCounter) {
-    int column = Data.move[1] - 1; //Starting at index that is to the right of spot
+int West(void) {
+    int jumpCounter = -1;
 
-    while (Data.board[Data.move[0]][column] != 0) { //Loop until end of direction is found
-        if (Data.board[Data.move[0]][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = column; //Keeps track of the index of the last disc of the same color
+    int column = Data.move[1] - 1; //Starting at index that is to the right of spot
+    while (Data.board[Data.move[0]][column] != 0) {
+        if (Data.board[Data.move[0]][column] == Data.current_color[0]) {
+            jumpCounter = column;
         }
 
         --column;
@@ -260,24 +264,24 @@ int West(int jumpCounter) {
     column = Data.move[1]; //Starting at spot
 
     if (jumpCounter != -1 && jumpCounter != Data.move[1] - 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (column <= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[Data.move[0]][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (column <= jumpCounter) {
+            Data.board[Data.move[0]][column] = Data.current_color[0];
 
             --column;
         }
     }
 
-    return jumpCounter;
+    return jumpCounter != -1 && jumpCounter != Data.move[1] - 1;
 }
 
-int NorthWest(int jumpCounter) {
+int NorthWest(void) {
+    int jumpCounter = -1;
+
     int row = Data.move[0] - 1; //Starting at index that is bottom-left to spot
     int column = Data.move[1] - 1;
-
-    while (Data.board[row][column] != 0) { //Loop until end of direction is found
-        if (Data.board[row][column] == Data.current_color[0]) { //Found same color => valid direction
-            jumpCounter = row; //Keeps track of the index of the last disc of the same color
+    while (Data.board[row][column] != 0) {
+        if (Data.board[row][column] == Data.current_color[0]) {
+            jumpCounter = row;
         }
 
         --row;
@@ -286,18 +290,16 @@ int NorthWest(int jumpCounter) {
 
     row = Data.move[0]; //Starting at spot
     column = Data.move[1];
-
     if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
-        //Valid direction because we found a disc of same color that is more than 1 space away
-        while (row <= jumpCounter) { //Loop until final disc of same color is found
-            Data.board[row][column] = Data.current_color[0]; //Replace every disc with 'current_color'
+        while (row <= jumpCounter) {
+            Data.board[row][column] = Data.current_color[0];
 
             --row;
             --column;
         }
     }
 
-    return jumpCounter != -1;
+    return jumpCounter != -1 && jumpCounter != Data.move[0] - 1;
 }
 
 void PrintTurn(void) {

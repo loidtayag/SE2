@@ -25,16 +25,16 @@ struct data {
 
 void InitializeGameSettings(void);
 void GetMove(void);
-int IsEmptyMove(void);
-int DirectionMove(void);
+bool IsEmptyMove(void);
+bool DirectionMove(void);
 bool North(void);
-int NorthEast(void);
-int East(void);
-int SouthEast(void);
-int South(void);
-int SouthWest(void);
-int West(void);
-int NorthWest(void);
+bool NorthEast(void);
+bool East(void);
+bool SouthEast(void);
+bool South(void);
+bool SouthWest(void);
+bool West(void);
+bool NorthWest(void);
 void PrintTurn(void);
 void SwitchTurn(void);
 

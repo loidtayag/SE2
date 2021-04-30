@@ -56,22 +56,21 @@ void GetMove(void) {
 
     /*Read in player's move and convert to index form*/
     fscanf(stdin, "%i %c", &Data.move[0], temp);
-    printf("\n"); //Separates move input line and board
     Data.move[0]--; //Getting correct row index
     Data.move[1] = temp[0] - 97; //Getting correct column index using ascii code
 }
 
-int IsEmptyMove(void) {
-    //Checking to see if it has a 'W' or 'B' in it already
-    return Data.board[Data.move[0]][Data.move[1]] != 66 && Data.board[Data.move[0]][Data.move[1]] != 87; //Using ascii code for char comparison
+bool IsEmptyMove(void) {
+    //Checking to see if it has a 'W' or 'B' in it already by using ascii code for char comparison
+    return Data.board[Data.move[0]][Data.move[1]] != 66 && Data.board[Data.move[0]][Data.move[1]] != 87;
 }
 
-int DirectionMove(void) {
+bool DirectionMove(void) {
     int valid = 0;
-    //We have to execute and check each one individually because 'or conditions' would cause a problem.
-    //Let's say 'North()' was true, because we use 'or conditions' the following functions wouldn't be executed
-    //because we only need one to be true i.e. it would not allow for multiple directions to be changed.
-    //Also only 'North()' is the only one well commented because the other directions just copy the comments from it
+
+    /*We have to execute and check each one individually because 'or conditions' would cause a problem.
+    Let's say 'North()' was true, because we use 'or conditions' the following functions wouldn't be executed
+    because we only need one to be true i.e. it would not allow for multiple directions to be changed.*/
     if (North() == true) {valid = 1;}
     if (NorthEast() != 0) {valid = 1;}
     if (East() != 0) {valid = 1;}
@@ -86,7 +85,7 @@ int DirectionMove(void) {
 
 bool North(void) {
     int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
-    bool capture = false;
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
     //Starting at index above spot, loop to check how far until the final same colored disc is found
     for (int row = Data.move[0] - 1; Data.board[row][Data.move[1]] != 0; --row) {
@@ -96,14 +95,14 @@ bool North(void) {
     }
 
     if (jumpCounter != -1) { //Passes if same color was found
-        //Starting at spot, loop to check if any disc would result in at least 1 capture
+        //Starting at index above spot, loop to check if it would result in at least 1 capture
         for (int row = Data.move[0] - 1; row >= jumpCounter; --row) {
             if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Passes if opposite color is found
                 capture = true;
             }
         }
 
-        if (capture == true) { //Passes if opposite color was found
+        if (capture == true) { //Passes if above loop found at least one capture
             //Starting at spot, loop to replace every disc with 'current_color'
             for (int row = Data.move[0]; row >= jumpCounter; --row) {
                 Data.board[row][Data.move[1]] = Data.current_color[0];
@@ -114,193 +113,267 @@ bool North(void) {
     return capture;
 }
 
-int NorthEast(void) {
-    int jumpCounter = -1;
+bool NorthEast(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int row = Data.move[0] - 1; //Starting at index that is top-right to spot
+    //Starting at index that is to the top-right of spot, loop to check how far until the final same colored disc is found
+    int row = Data.move[0] - 1;
     int column = Data.move[1] + 1;
     while (Data.board[row][column] != 0) {
-        if (Data.board[row][column] == Data.current_color[0]) {
+        if (Data.board[row][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = row;
         }
-
         --row;
         ++column;
     }
 
-    row = Data.move[0]; //Starting at spot
-    column = Data.move[1];
-    if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index that is to the top-right of spot, loop to check if it would result in at least 1 capture
+        row = Data.move[0] - 1;
+        column = Data.move[1] + 1;
         while (row >= jumpCounter) {
-            Data.board[row][column] = Data.current_color[0];
-
+            if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
             --row;
             ++column;
         }
+
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            row = Data.move[0];
+            column = Data.move[1];
+            while (row >= jumpCounter) {
+                Data.board[row][column] = Data.current_color[0];
+                --row;
+                ++column;
+            }
+        }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[0] - 1;
+    return capture;
 }
 
-int East(void) {
-    int jumpCounter = -1;
+bool East(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int column = Data.move[1] + 1; //Starting at index that is to the right of spot
-    while (Data.board[Data.move[0]][column] != 0) {
-        if (Data.board[Data.move[0]][column] == Data.current_color[0]) {
+    //Starting at index that's to the right of spot, loop to check how far until the final same colored disc is found
+    for (int column = Data.move[1] + 1; Data.board[Data.move[0]][column] != 0; ++column) {
+        if (Data.board[Data.move[0]][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = column;
         }
-
-        ++column;
     }
 
-    column = Data.move[1]; //Starting at spot
-    if (jumpCounter != -1 && jumpCounter != Data.move[1] + 1) {
-        while (column <= jumpCounter) {
-            Data.board[Data.move[0]][column] = Data.current_color[0];
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index that's to the right of spot, loop to check if it would result in at least 1 capture
+        for (int column = Data.move[1] + 1; column <= jumpCounter; ++column) {
+            if (Data.board[Data.move[0]][column] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
+        }
 
-            ++column;
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            for (int column = Data.move[1]; column <= jumpCounter; ++column) {
+                Data.board[Data.move[0]][column] = Data.current_color[0];
+            }
         }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[1] + 1;
+    return capture;
 }
 
-int SouthEast(void) {
-    int jumpCounter = -1;
+bool SouthEast(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int row = Data.move[0] + 1; //Starting at index that is bottom-right to spot
+    //Starting at index that is to the bottom-right of spot, loop to check how far until the final same colored disc is found
+    int row = Data.move[0] + 1;
     int column = Data.move[1] + 1;
     while (Data.board[row][column] != 0) {
-        if (Data.board[row][column] == Data.current_color[0]) {
+        if (Data.board[row][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = row;
         }
-
         ++row;
         ++column;
     }
 
-    row = Data.move[0]; //Starting at spot
-    column = Data.move[1];
-    if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index that is to the bottom-right of spot, loop to check if it would result in at least 1 capture
+        row = Data.move[0] + 1;
+        column = Data.move[1] + 1;
         while (row <= jumpCounter) {
-            Data.board[row][column] = Data.current_color[0];
-
+            if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
             ++row;
             ++column;
         }
+
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            row = Data.move[0];
+            column = Data.move[1];
+            while (row <= jumpCounter) {
+                Data.board[row][column] = Data.current_color[0];
+                ++row;
+                ++column;
+            }
+        }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[0] + 1;
+    return capture;
 }
 
-int South(void) {
-    int jumpCounter = -1;
+bool South(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int row = Data.move[0] + 1; //Starting at index below spot
-    while (Data.board[row][Data.move[1]] != 0) {
-        if (Data.board[row][Data.move[1]] == Data.current_color[0]) {
+    //Starting at index below spot, loop to check how far until the final same colored disc is found
+    for (int row = Data.move[0] + 1; Data.board[row][Data.move[1]] != 0; ++row) {
+        if (Data.board[row][Data.move[1]] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = row;
         }
-
-        ++row;
     }
 
-    row = Data.move[0]; //Starting at spot
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index below spot, loop to check if it would result in at least 1 capture
+        for (int row = Data.move[0] + 1; row <= jumpCounter; ++row) {
+            if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
+        }
 
-    if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
-        while (row <= jumpCounter) {
-            Data.board[row][Data.move[1]] = Data.current_color[0];
-
-            ++row;
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            for (int row = Data.move[0]; row <= jumpCounter; ++row) {
+                Data.board[row][Data.move[1]] = Data.current_color[0];
+            }
         }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[0] + 1;
+    return capture;
 }
 
-int SouthWest(void) {
-    int jumpCounter = -1;
+bool SouthWest(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int row = Data.move[0] + 1; //Starting at index that is bottom-left to spot
+    //Starting at index that is to the bottom-left of spot, loop to check how far until the final same colored disc is found
+    int row = Data.move[0] + 1;
     int column = Data.move[1] - 1;
     while (Data.board[row][column] != 0) {
-        if (Data.board[row][column] == Data.current_color[0]) {
+        if (Data.board[row][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = row;
         }
-
         ++row;
         --column;
     }
 
-    row = Data.move[0]; //Starting at spot
-    column = Data.move[1];
-    if (jumpCounter != -1 && jumpCounter != Data.move[0] + 1) {
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index that is to the bottom-left of spot, loop to check if it would result in at least 1 capture
+        row = Data.move[0] + 1;
+        column = Data.move[1] - 1;
         while (row <= jumpCounter) {
-            Data.board[row][column] = Data.current_color[0];
-
+            if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
             ++row;
             --column;
         }
+
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            row = Data.move[0];
+            column = Data.move[1];
+            while (row <= jumpCounter) {
+                Data.board[row][column] = Data.current_color[0];
+                ++row;
+                --column;
+            }
+        }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[0] + 1;
+    return capture;
 }
 
-int West(void) {
-    int jumpCounter = -1;
+bool West(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int column = Data.move[1] - 1; //Starting at index that is to the right of spot
-    while (Data.board[Data.move[0]][column] != 0) {
-        if (Data.board[Data.move[0]][column] == Data.current_color[0]) {
+    //Starting at index that's to the left of spot, loop to check how far until the final same colored disc is found
+    for (int column = Data.move[1] - 1; Data.board[Data.move[0]][column] != 0; --column) {
+        if (Data.board[Data.move[0]][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = column;
         }
-
-        --column;
     }
 
-    column = Data.move[1]; //Starting at spot
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index that's to the left of spot, loop to check if it would result in at least 1 capture
+        for (int column = Data.move[1] - 1; column >= jumpCounter; --column) {
+            if (Data.board[Data.move[0]][column] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
+        }
 
-    if (jumpCounter != -1 && jumpCounter != Data.move[1] - 1) {
-        while (column <= jumpCounter) {
-            Data.board[Data.move[0]][column] = Data.current_color[0];
-
-            --column;
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            for (int column = Data.move[1]; column >= jumpCounter; --column) {
+                Data.board[Data.move[0]][column] = Data.current_color[0];
+            }
         }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[1] - 1;
+    return capture;
 }
 
-int NorthWest(void) {
-    int jumpCounter = -1;
+bool NorthWest(void) {
+    int jumpCounter = -1; //Keeps track of the index of the last disc of the same color
+    bool capture = false; //Change to 'true' if we capture at least one disc
 
-    int row = Data.move[0] - 1; //Starting at index that is bottom-left to spot
+    //Starting at index that is to the top-left of spot, loop to check how far until the final same colored disc is found
+    int row = Data.move[0] - 1;
     int column = Data.move[1] - 1;
     while (Data.board[row][column] != 0) {
-        if (Data.board[row][column] == Data.current_color[0]) {
+        if (Data.board[row][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = row;
         }
-
         --row;
         --column;
     }
 
-    row = Data.move[0]; //Starting at spot
-    column = Data.move[1];
-    if (jumpCounter != -1 && jumpCounter != Data.move[0] - 1) {
-        while (row <= jumpCounter) {
-            Data.board[row][column] = Data.current_color[0];
-
+    if (jumpCounter != -1) { //Passes if same color was found
+        //Starting at index that is to the top-left of spot, loop to check if it would result in at least 1 capture
+        row = Data.move[0] - 1;
+        column = Data.move[1] - 1;
+        while (row >= jumpCounter) {
+            if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                capture = true;
+            }
             --row;
             --column;
         }
+
+        if (capture == true) { //Passes if above loop found at least one capture
+            //Starting at spot, loop to replace every disc with 'current_color'
+            row = Data.move[0];
+            column = Data.move[1];
+            while (row >= jumpCounter) {
+                Data.board[row][column] = Data.current_color[0];
+                --row;
+                --column;
+            }
+        }
     }
 
-    return jumpCounter != -1 && jumpCounter != Data.move[0] - 1;
+    return capture;
 }
 
 void PrintTurn(void) {
+    printf("\n"); //Separates move input line and board
+
     for (int i = 0; i < 9; ++i) { //Row Index
         /*Board*/
         printf("     ---------------------------------\n"); //Row Splitter

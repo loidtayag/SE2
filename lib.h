@@ -24,17 +24,18 @@ struct data {
 };
 
 void InitializeGameSettings(void);
+bool PossibleMoves(void);
 void GetMove(void);
 bool IsEmptyMove(void);
-bool DirectionMove(void);
-bool North(void);
-bool NorthEast(void);
-bool East(void);
-bool SouthEast(void);
-bool South(void);
-bool SouthWest(void);
-bool West(void);
-bool NorthWest(void);
+bool DirectionMove(bool modifyBoard);
+bool North(bool modifyBoard);
+bool NorthEast(bool modifyBoard);
+bool East(bool modifyBoard);
+bool SouthEast(bool modifyBoard);
+bool South(bool modifyBoard);
+bool SouthWest(bool modifyBoard);
+bool West(bool modifyBoard);
+bool NorthWest(bool modifyBoard);
 void PrintTurn(void);
 void SwitchTurn(void);
 

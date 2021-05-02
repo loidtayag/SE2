@@ -23,22 +23,29 @@ struct data {
     char board[8][8];
 };
 
+struct end {
+    bool player1_passed;
+    bool player2_passed;
+    int combined_score;
+};
+
 void InitializeGameSettings(void);
 bool PossibleMoves(void);
 void GetMove(void);
 bool IsEmptyMove(void);
-bool DirectionMove(bool modifyBoard);
+bool DirectionMove(bool modify);
 void SpotCapture(void);
 void NonSpotCapture(void);
-bool North(bool modifyBoard);
-bool NorthEast(bool modifyBoard);
-bool East(bool modifyBoard);
-bool SouthEast(bool modifyBoard);
-bool South(bool modifyBoard);
-bool SouthWest(bool modifyBoard);
-bool West(bool modifyBoard);
-bool NorthWest(bool modifyBoard);
-void PrintTurn(void);
+bool North(bool modify);
+bool NorthEast(bool modify);
+bool East(bool modify);
+bool SouthEast(bool modify);
+bool South(bool modify);
+bool SouthWest(bool modify);
+bool West(bool modify);
+bool NorthWest(bool modify);
+int whosTurn(void);
+int EndTurn(void);
 void SwitchTurn(void);
 
 #endif //SE2_LIB_H

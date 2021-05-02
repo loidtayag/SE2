@@ -1,48 +1,57 @@
 #include "lib.h"
+bool BothPassed(struct end End);
 
 int main() {
-    bool gameOver = false;
-    bool validMove = false;
+    struct end End;
+    End.player1_passed = false;
+    End.player2_passed = false;
+    End.combined_score = 4;
 
     /*Initialization*/
     InitializeGameSettings();
-    PrintTurn();
+    EndTurn();
 
-    while (gameOver == false) {
+    /*Turn Simulation*/
+    while (End.combined_score < 65 || BothPassed(End) == false) {
+        /*Move Input*/
         if (PossibleMoves() == true) { //Passes if there is an available move
-            do { //Ensuring validity of move input
+            bool validMove = false;
+            do { //Ensuring validity of move
                 GetMove();
-                if (IsEmptyMove() == true) { //Passes if spot is empty
-                    if (DirectionMove(true) == true) { //Passes if spot had at least one direction that would result in at least one capture
+                if (IsEmptyMove() == true) { //Spot is empty
+                    if (DirectionMove(true) == true) { //Spot had at least one direction that would result in at least one capture
+                        whosTurn() == 1 ? (End.player1_passed = true): (End.player2_passed = true);
                         validMove = true; //It has passed every test thus making it a valid move, ends loop
                     }
-                    else { //Fails if spot had no direction that would result in at least one disc capture
+                    else { //Spot had no direction that would result in at least one capture
                         printf("Invalid move because no direction captured at least one disc!\n\n");
                     }
                 }
-                else { //Fails if spot isn't empty
+                else { //Spot isn't empty
                     printf("Invalid move because it's not empty!\n\n");
                 }
             } while (validMove == false);
         }
         else { //Fails if no available moves, hence end turn
             printf("Unfortunately, you have no available moves left therefore your turn must be skipped!\n");
-            validMove = true;
+            whosTurn() == 1 ? (End.player1_passed = true): (End.player2_passed = true);
         }
 
+        /*End of turn*/
+        End.combined_score = EndTurn();
+        SwitchTurn();
+    }
 
-        /*Results of the move*/
-        PrintTurn();
-
-        /*Checking if game should end or move on to next player's turn*/
-        if (NULL) { //Ending game
-            gameOver = true;
-        }
-        else { //Resetting variables for next player's turn
-            SwitchTurn();
-            validMove = false;
-        }
+    if (End.combined_score > 64) {
+        printf("The board has been filled, game ending...");
+    }
+    else {
+        printf("Neither players have any available moves, game ending");
     }
 
     return 0;
+}
+
+bool BothPassed(struct end End) {
+    return End.player1_passed == true && End.player2_passed == true;
 }

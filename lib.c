@@ -90,21 +90,39 @@ bool IsEmptyMove(void) {
 }
 
 bool DirectionMove(bool modifyBoard) {
-    bool validDirection = false;
+    bool validDirections = false;
 
     /*We have to execute and check each one individually because 'or conditions' would cause a problem.
     Let's say 'North()' was true, because we use 'or conditions' the following functions wouldn't be executed
     because we only need one to be true i.e. it would not allow for multiple directions to be changed.*/
-    if (North(modifyBoard) == true) {validDirection = true;}
-    if (NorthEast(modifyBoard) == true) {validDirection = true;}
-    if (East(modifyBoard) == true) {validDirection = true;}
-    if (SouthEast(modifyBoard) == true) {validDirection = true;}
-    if (South(modifyBoard) == true) {validDirection = true;}
-    if (SouthWest(modifyBoard) == true) {validDirection = true;}
-    if (West(modifyBoard) == true) {validDirection = true;}
-    if (NorthWest(modifyBoard) == true) {validDirection = true;}
+    SpotCapture(); //Have to put outside the functions to prevent double counting
+    if (North(modifyBoard) == true) {validDirections = true;}
+    if (NorthEast(modifyBoard) == true) {validDirections = true;}
+    if (East(modifyBoard) == true) {validDirections = true;}
+    if (SouthEast(modifyBoard) == true) {validDirections = true;}
+    if (South(modifyBoard) == true) {validDirections = true;}
+    if (SouthWest(modifyBoard) == true) {validDirections = true;}
+    if (West(modifyBoard) == true) {validDirections = true;}
+    if (NorthWest(modifyBoard) == true) {validDirections = true;}
 
-    return validDirection;
+    return validDirections;
+}
+
+void SpotCapture(void) {
+    (Data.player1_color[0] == Data.current_color[0])? //Check whose spot it is
+    Data.player1_score++: //Player 1's spot
+    Data.player2_score++; //Player 2's spot
+}
+
+void NonSpotCapture(void) {
+    if (Data.player1_color[0] == Data.current_color[0]) { //Player 1 is capturing
+        Data.player1_score++;
+        Data.player2_score--;
+    }
+    else { //Player 2 is capturing
+        Data.player2_score++;
+        Data.player1_score--;
+    }
 }
 
 bool North(bool modifyBoard) {
@@ -122,6 +140,10 @@ bool North(bool modifyBoard) {
         //Starting at index above spot, loop to check if it would result in at least 1 capture
         for (int row = Data.move[0] - 1; row >= jumpCounter; --row) {
             if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Passes if opposite color is found
+                /*Score calculator*/
+                if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
         }
@@ -158,6 +180,10 @@ bool NorthEast(bool modifyBoard) {
         column = Data.move[1] + 1;
         while (row >= jumpCounter) {
             if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                /*Score calculator*/
+                if (Data.board[row][column] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
             --row;
@@ -194,6 +220,9 @@ bool East(bool modifyBoard) {
         //Starting at index that's to the right of spot, loop to check if it would result in at least 1 capture
         for (int column = Data.move[1] + 1; column <= jumpCounter; ++column) {
             if (Data.board[Data.move[0]][column] != Data.current_color[0]) { //Passes if opposite color is found
+                if (Data.board[Data.move[0]][column] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
         }
@@ -230,6 +259,9 @@ bool SouthEast(bool modifyBoard) {
         column = Data.move[1] + 1;
         while (row <= jumpCounter) {
             if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                if (Data.board[row][column] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
             ++row;
@@ -266,6 +298,9 @@ bool South(bool modifyBoard) {
         //Starting at index below spot, loop to check if it would result in at least 1 capture
         for (int row = Data.move[0] + 1; row <= jumpCounter; ++row) {
             if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Passes if opposite color is found
+                if (Data.board[row][Data.move[1]] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
         }
@@ -302,6 +337,9 @@ bool SouthWest(bool modifyBoard) {
         column = Data.move[1] - 1;
         while (row <= jumpCounter) {
             if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                if (Data.board[row][column] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
             ++row;
@@ -338,6 +376,9 @@ bool West(bool modifyBoard) {
         //Starting at index that's to the left of spot, loop to check if it would result in at least 1 capture
         for (int column = Data.move[1] - 1; column >= jumpCounter; --column) {
             if (Data.board[Data.move[0]][column] != Data.current_color[0]) { //Passes if opposite color is found
+                if (Data.board[Data.move[0]][column] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
         }
@@ -360,7 +401,7 @@ bool NorthWest(bool modifyBoard) {
     //Starting at index that is to the top-left of spot, loop to check how far until the final same colored disc is found
     int row = Data.move[0] - 1;
     int column = Data.move[1] - 1;
-    while (Data.board[row][column] != 0 && row < -1 && column < -1) {
+    while (Data.board[row][column] != 0 && row > -1 && column > -1) {
         if (Data.board[row][column] == Data.current_color[0]) { //Passes if same color is found
             jumpCounter = row;
         }
@@ -374,6 +415,9 @@ bool NorthWest(bool modifyBoard) {
         column = Data.move[1] - 1;
         while (row >= jumpCounter) {
             if (Data.board[row][column] != Data.current_color[0]) { //Passes if opposite color is found
+                if (Data.board[row][column] != Data.current_color[0]) { //Opposite color found hence add to score
+                    NonSpotCapture();
+                }
                 capture = true;
             }
             --row;
@@ -414,10 +458,10 @@ void PrintTurn(void) {
                 printf("      __________________________________\n");
                 break;
             case 3:
-                printf("      -%10s (black): %i           -\n", Data.player1_name, Data.player1_score);
+                printf("      -%10s (%s): %i           -\n", Data.player1_name, Data.player1_color, Data.player1_score);
                 break;
             case 4:
-                printf("      -%10s (white): %i           -\n", Data.player2_name, Data.player2_score);
+                printf("      -%10s (%s): %i           -\n", Data.player2_name, Data.player2_color, Data.player2_score);
                 break;
             case 5:
                 printf("      __________________________________\n");

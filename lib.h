@@ -28,6 +28,8 @@ bool PossibleMoves(void);
 void GetMove(void);
 bool IsEmptyMove(void);
 bool DirectionMove(bool modifyBoard);
+void SpotCapture(void);
+void NonSpotCapture(void);
 bool North(bool modifyBoard);
 bool NorthEast(bool modifyBoard);
 bool East(bool modifyBoard);

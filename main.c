@@ -1,5 +1,4 @@
 #include "lib.h"
-bool BothPassed(struct end End);
 
 int main() {
     struct end End;
@@ -9,10 +8,10 @@ int main() {
 
     /*Initialization*/
     InitializeGameSettings();
-    EndTurn();
+    displayTurn();
 
     /*Turn Simulation*/
-    while (End.combined_score < 65 || BothPassed(End) == false) {
+    while (End.combined_score < 65 && (End.player1_passed == true && End.player2_passed == true)) {
         /*Move Input*/
         if (PossibleMoves() == true) { //Passes if there is an available move
             bool validMove = false;
@@ -38,10 +37,11 @@ int main() {
         }
 
         /*End of turn*/
-        End.combined_score = EndTurn();
-        SwitchTurn();
+        End.combined_score = displayTurn();
+        switchTurn();
     }
 
+    /*Endgame*/
     if (End.combined_score > 64) {
         printf("The board has been filled, game ending...");
     }
@@ -50,8 +50,4 @@ int main() {
     }
 
     return 0;
-}
-
-bool BothPassed(struct end End) {
-    return End.player1_passed == true && End.player2_passed == true;
 }

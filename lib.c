@@ -22,14 +22,6 @@ void InitializeGameSettings(void) {
     Data.board[4][4] = 'W';
 
     /*Score Initialization*/
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            if (i == 8 && j == 8) {
-                break;
-            }
-            Data.board[i][j] = 'B';
-        }
-    }
     Data.player1_score = 2;
     Data.player2_score = 2;
 
@@ -449,7 +441,7 @@ bool NorthWest(bool modify) {
 }
 
 int whosTurn(void) {
-    if (Data.player1_name[0] == Data.current_color[0]) {
+    if (Data.player1_color[0] == Data.current_color[0]) {
         return 1;
     }
     else {
@@ -457,7 +449,7 @@ int whosTurn(void) {
     }
 }
 
-int EndTurn(void) {
+int displayTurn(void) {
     printf("\n"); //Separates move input line and board
     for (int i = 0; i < 9; ++i) { //Row Index
         /*Board*/
@@ -493,7 +485,7 @@ int EndTurn(void) {
     return (Data.player1_score + Data.player2_score);
 }
 
-void SwitchTurn(void) {
+void switchTurn(void) {
     strcmp(Data.current_color, "Black") == 0 ?
     strcpy(Data.current_color, "White") : //End black's turn
     strcpy(Data.current_color, "Black"); //End white's turn

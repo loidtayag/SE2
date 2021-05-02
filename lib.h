@@ -45,7 +45,7 @@ bool SouthWest(bool modify);
 bool West(bool modify);
 bool NorthWest(bool modify);
 int whosTurn(void);
-int EndTurn(void);
-void SwitchTurn(void);
+int displayTurn(void);
+void switchTurn(void);
 
 #endif //SE2_LIB_H

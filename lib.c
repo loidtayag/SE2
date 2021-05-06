@@ -14,7 +14,11 @@ void InitializeGameSettings(void) {
     scanf("%s", Data.player1_name);
     printf("Enter player 2 name: ");
     scanf("%s", Data.player2_name);
-
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            Data.board[i][j] = 'B';
+        }
+    }
     /*Board Initialization*/
     Data.board[3][3] = 'W';
     Data.board[3][4] = 'B';
@@ -489,4 +493,27 @@ void switchTurn(void) {
     strcmp(Data.current_color, "Black") == 0 ?
     strcpy(Data.current_color, "White") : //End black's turn
     strcpy(Data.current_color, "Black"); //End white's turn
+}
+
+void endGame(void) {
+    /*Saving outcome in file*/
+    FILE *fp;
+    if ((fp = fopen("history.txt", "a")) == NULL) {
+        printf("Error: couldn't open file to record match...\n");
+    }
+    else {
+        fprintf(fp, "%s***%i***%s***%i\n", Data.player1_name, Data.player1_score, Data.player2_name, Data.player2_score);
+        fclose(fp);
+    }
+
+    /*Declaring outcome to user*/
+    if (Data.player1_score>Data.player2_score) { //Player 1 wins
+        printf("Congratulations %s, you have won the game, game ending...", Data.player1_name);
+    }
+    else if (Data.player1_score<Data.player2_score) { //Player 2 wins
+        printf("Congratulations %s, you have won the game, game ending...", Data.player2_name);
+    }
+    else { //Draw
+        printf("The game has ended in a draw, game ending...");
+    }
 }

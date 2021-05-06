@@ -47,5 +47,6 @@ bool NorthWest(bool modify);
 int whosTurn(void);
 int displayTurn(void);
 void switchTurn(void);
+void endGame(void);
 
 #endif //SE2_LIB_H

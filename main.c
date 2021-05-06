@@ -11,7 +11,7 @@ int main() {
     displayTurn();
 
     /*Turn Simulation*/
-    while (End.combined_score < 65 && (End.player1_passed == true && End.player2_passed == true)) {
+    while (End.combined_score < 65 && (End.player1_passed == false || End.player2_passed == false)) {
         /*Move Input*/
         if (PossibleMoves() == true) { //Passes if there is an available move
             bool validMove = false;
@@ -43,11 +43,13 @@ int main() {
 
     /*Endgame*/
     if (End.combined_score > 64) {
-        printf("The board has been filled, game ending...");
+        printf("The board has been filled, game ending...\n");
     }
-    else {
-        printf("Neither players have any available moves, game ending");
+    else if (End.player1_passed == true && End.player2_passed == true){
+        printf("Neither players have any available moves, game ending...\n");
     }
+
+    endGame();
 
     return 0;
 }

@@ -29,7 +29,7 @@ struct end {
     int combined_score;
 };
 
-void InitializeGameSettings(void);
+void GameSettings(void);
 bool PossibleMoves(void);
 void GetMove(void);
 bool IsEmptyMove(void);

@@ -6,7 +6,7 @@
 
 struct data Data;
 
-void InitializeGameSettings(void) {
+void GameSettings(void) {
     printf("\n---Welcome to Othello---\n\n");
 
     /*Name Initialization*/
@@ -14,11 +14,7 @@ void InitializeGameSettings(void) {
     scanf("%s", Data.player1_name);
     printf("Enter player 2 name: ");
     scanf("%s", Data.player2_name);
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            Data.board[i][j] = 'B';
-        }
-    }
+
     /*Board Initialization*/
     Data.board[3][3] = 'W';
     Data.board[3][4] = 'B';
@@ -67,10 +63,6 @@ bool PossibleMoves(void) {
         }
     }
 
-    if (possibleMoves == true) {
-        printf("The above are the moves you can make.\n\n");
-    }
-
     return possibleMoves;
 }
 
@@ -113,7 +105,6 @@ bool DirectionMove(bool modify) {
 }
 
 void SpotCapture(void) {
-    printf("eeee\n");
     (Data.player1_color[0] == Data.current_color[0])? //Check whose spot it is
     Data.player1_score++: //Player 1's spot
     Data.player2_score++; //Player 2's spot
@@ -121,12 +112,10 @@ void SpotCapture(void) {
 
 void NonSpotCapture(void) {
     if (Data.player1_color[0] == Data.current_color[0]) { //Player 1 is capturing
-        printf("Player 1 captured!\n");
         Data.player1_score++;
         Data.player2_score--;
     }
     else { //Player 2 is capturing
-        printf("Player 1 captured!\n");
         Data.player2_score++;
         Data.player1_score--;
     }

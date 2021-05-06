@@ -4,22 +4,19 @@ int main() {
     struct end End;
     End.player1_passed = false;
     End.player2_passed = false;
-    End.combined_score = 4;
-
-    /*Initialization*/
-    InitializeGameSettings();
-    displayTurn();
+    GameSettings();
+    End.combined_score = displayTurn();
 
     /*Turn Simulation*/
-    while (End.combined_score < 65 && (End.player1_passed == false || End.player2_passed == false)) {
+    while (End.combined_score < 64 && (End.player1_passed == false || End.player2_passed == false)) {
         /*Move Input*/
         if (PossibleMoves() == true) { //Passes if there is an available move
+            printf("The above are the moves you can make.\n\n");
             bool validMove = false;
             do { //Ensuring validity of move
                 GetMove();
                 if (IsEmptyMove() == true) { //Spot is empty
                     if (DirectionMove(true) == true) { //Spot had at least one direction that would result in at least one capture
-                        whosTurn() == 1 ? (End.player1_passed = true): (End.player2_passed = true);
                         validMove = true; //It has passed every test thus making it a valid move, ends loop
                     }
                     else { //Spot had no direction that would result in at least one capture
@@ -42,7 +39,7 @@ int main() {
     }
 
     /*Endgame*/
-    if (End.combined_score > 64) {
+    if (End.combined_score == 64) {
         printf("The board has been filled, game ending...\n");
     }
     else if (End.player1_passed == true && End.player2_passed == true){

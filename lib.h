@@ -32,6 +32,7 @@ struct end {
 void GameSettings(void);
 bool PossibleMoves(void);
 void GetMove(void);
+int whosTurn(void);
 bool IsEmptyMove(void);
 bool DirectionMove(bool modify);
 void SpotCapture(void);
@@ -44,7 +45,6 @@ bool South(bool modify);
 bool SouthWest(bool modify);
 bool West(bool modify);
 bool NorthWest(bool modify);
-int whosTurn(void);
 int displayTurn(void);
 void switchTurn(void);
 void endGame(void);

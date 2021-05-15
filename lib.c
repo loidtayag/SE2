@@ -63,6 +63,7 @@ bool PossibleMoves(void) {
         }
     }
 
+    printf("The above are the moves you can make.\n\n");
     return possibleMoves;
 }
 
@@ -70,7 +71,7 @@ void GetMove(void) {
     char temp[2]; //to store Column move so that we can convert it to an integer
 
     /*Check which player's turn it is*/
-    Data.player1_color[0] == Data.current_color[0]?
+    whosTurn() == 1?
     printf("%s, enter your move: ", Data.player1_name): //Player 1's turn
     printf("%s, enter your move: ", Data.player2_name); //Player 2's turn
 
@@ -78,6 +79,11 @@ void GetMove(void) {
     fscanf(stdin, "%i %c", &Data.move[0], temp);
     Data.move[0]--; //Getting correct row index
     Data.move[1] = temp[0] - 97; //Getting correct column index using ascii code
+}
+
+int whosTurn(void) {
+    if (Data.player1_color[0] == Data.current_color[0]) { return 1; }
+    else { return 2; }
 }
 
 bool IsEmptyMove(void) {
@@ -431,15 +437,6 @@ bool NorthWest(bool modify) {
     }
 
     return capture;
-}
-
-int whosTurn(void) {
-    if (Data.player1_color[0] == Data.current_color[0]) {
-        return 1;
-    }
-    else {
-        return 2;
-    }
 }
 
 int displayTurn(void) {

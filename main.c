@@ -11,7 +11,8 @@ int main() {
     while (End.combined_score < 64 && (End.player1_passed == false || End.player2_passed == false)) {
         /*Move Input*/
         if (PossibleMoves() == true) { //Passes if there is an available move
-            printf("The above are the moves you can make.\n\n");
+            //If the player previously passed, we need to update that s/he hasn't passed the current turn
+            whosTurn() == 1 ? (End.player1_passed = false): (End.player2_passed = false);
             bool validMove = false;
             do { //Ensuring validity of move
                 GetMove();
@@ -45,7 +46,6 @@ int main() {
     else if (End.player1_passed == true && End.player2_passed == true){
         printf("Neither players have any available moves, game ending...\n");
     }
-
     endGame();
 
     return 0;

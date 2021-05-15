@@ -38,12 +38,10 @@ void GameSettings(void) {
         strcpy(Data.player2_color, "Black");
     }
 
-    printf("Random 50-50 assignment of colors has been completed, %s is %s and %s is %s.",
+    printf("Random 50-50 assignment of colors has been completed, %s is %s and %s is %s."
+           "\n\n------------------------------------------------------------------------------\n\n"
+           "Example of move input: 3 d (row number + space + column letter)\n\n",
            Data.player1_name, Data.player1_color, Data.player2_name, Data.player2_color);
-
-    /*For separating*/
-    printf("\n\n------------------------------------------------------------------------------\n\n"
-           "Example of move input: 3 d (row number + space + column letter)\n\n");
 }
 
 bool PossibleMoves(void) {
